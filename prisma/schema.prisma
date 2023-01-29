@@ -1,0 +1,64 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model authors {
+  id           Int            @id @default(autoincrement())
+  name         String         @db.VarChar(200)
+  authorsbooks authorsbooks[]
+  books        books[]
+}
+
+model authorsbooks {
+  id       Int     @id @default(autoincrement())
+  bookId   Int
+  authorId Int
+  authors  authors @relation(fields: [authorId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  books    books   @relation(fields: [bookId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model books {
+  id           Int            @id @default(autoincrement())
+  title        String
+  isbn         String         @unique @db.VarChar(13)
+  categoryId   Int
+  countryId    Int
+  yearId       Int
+  createdAt    DateTime?      @default(dbgenerated("(now() AT TIME ZONE 'BRT'::text)")) @db.Timestamp(6)
+  authorsbooks authorsbooks[]
+  categories   categories     @relation(fields: [categoryId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  authors      authors        @relation(fields: [countryId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  years        years          @relation(fields: [yearId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  genresbooks  genresbooks[]
+}
+
+model categories {
+  id    Int     @id @default(autoincrement())
+  name  String  @db.VarChar(200)
+  books books[]
+}
+
+model genres {
+  id          Int           @id @default(autoincrement())
+  name        String        @db.VarChar(200)
+  genresbooks genresbooks[]
+}
+
+model genresbooks {
+  id      Int    @id @default(autoincrement())
+  bookId  Int
+  genreId Int
+  books   books  @relation(fields: [bookId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  genres  genres @relation(fields: [genreId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model years {
+  id     Int     @id @default(autoincrement())
+  number String  @db.VarChar(4)
+  books  books[]
+}
