@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import { Book, BookEntity } from "../protocols/books.js";
-import { getBooks, insertBook, reviseBook } from "../repositories/books.repository.js";
+import { excludeBook, getBooks, insertBook, reviseBook } from "../repositories/books.repository.js";
 
 
 
@@ -36,5 +36,20 @@ async function updateBook(req: Request, res: Response) {
     }
 }
 
+async function deleteBook (req: Request, res: Response) {
+    const {bookId} = req.params;
+    const id = Number(bookId)
+    try {
+        const resultado = await excludeBook(id)
+        return res.status(StatusCodes.OK).send(`Book deleted ${resultado}`);
 
-export { postBook, listBooks, updateBook}
+    } catch (error) {
+        console.error(error);
+        return res.sendStatus(StatusCodes.INTERNAL_SERVER_ERROR);
+    }
+
+}
+
+
+
+export { postBook, listBooks, updateBook, deleteBook}

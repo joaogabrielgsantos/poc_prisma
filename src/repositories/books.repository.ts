@@ -1,3 +1,4 @@
+import { func } from "joi";
 import prisma from "../database/database.js";
 import { Book, BookEntity } from "../protocols/books.js";
 
@@ -64,10 +65,10 @@ async function getBooks() {
     })
 }
 
-async function reviseBook(book: BookEntity){
+async function reviseBook(book: BookEntity) {
     const upBook = await prisma.books.update({
         where: {
-          id: book.id
+            id: book.id
         },
         data: {
             title: book.title,
@@ -88,7 +89,7 @@ async function reviseBook(book: BookEntity){
                 }
             },
             authorsbooks: {
-                deleteMany:{},
+                deleteMany: {},
                 create: book.authorId.map(item => (
                     {
                         authors: {
@@ -101,7 +102,7 @@ async function reviseBook(book: BookEntity){
 
             },
             genresbooks: {
-                deleteMany:{},                
+                deleteMany: {},
                 create: book.genreId.map(item => (
                     {
                         genres: {
@@ -115,9 +116,39 @@ async function reviseBook(book: BookEntity){
             }
 
         }
-      })
-      return upBook
+    })
+    return upBook
+}
+
+async function excludeBook(id: number) {
+    async function delAuthorsBooks() {
+        await prisma.authorsbooks.deleteMany({
+            where: {
+                bookId: id
+            }
+        });
+
+    }
+    async function delGenresBooks() {
+        await prisma.genresbooks.deleteMany({
+            where: {
+                bookId: id
+            }
+        });
+
+    }
+    async function delBooks() {
+        await prisma.books.delete({
+            where: {
+                id: id
+            }
+        });
+
+    }
+
+    return delAuthorsBooks(), delGenresBooks(), delBooks()
 }
 
 
-export { insertBook, getBooks, reviseBook }
+
+export { insertBook, getBooks, reviseBook, excludeBook }
