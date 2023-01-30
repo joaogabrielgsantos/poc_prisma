@@ -17,23 +17,23 @@ const bookSchema = Joi.object<BookEntity>({
             .string()
             .min(13)
             .required(),
-    author:
+    authorId:
         Joi
             .array().items(Joi.number())
             .required(),
-    category:
+    categoryId:
         Joi
             .number()
             .required(),
-    genre:
+    genreId:
         Joi
             .array().items(Joi.number())
             .required(),
-    year:
+    yearId:
         Joi
             .number()
             .required(),
-    country:
+    countryId:
         Joi
             .number()
             .required()

@@ -2,11 +2,11 @@ export type BookEntity = {
     id?: number,
     title: string,
     isbn: string,
-    author: number[],
-    genre: number[],
-    category: number,
-    year: number,
-    country: number
+    authorId: number[],
+    genreId: number[],
+    categoryId: number,
+    yearId: number,
+    countryId: number
 
 }
 
@@ -17,5 +17,11 @@ export type AuthorEntity = {
     author: string
 }
 
-
+export type BookDB = {
+    title: string,
+    isbn: string,
+    categoryId: number,
+    yearId: number,
+    countryId: number
+}
 
