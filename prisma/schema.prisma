@@ -11,7 +11,6 @@ model authors {
   id           Int            @id @default(autoincrement())
   name         String         @db.VarChar(200)
   authorsbooks authorsbooks[]
-  books        books[]
 }
 
 model authorsbooks {
@@ -32,12 +31,18 @@ model books {
   createdAt    DateTime?      @default(dbgenerated("(now() AT TIME ZONE 'BRT'::text)")) @db.Timestamp(6)
   authorsbooks authorsbooks[]
   categories   categories     @relation(fields: [categoryId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  authors      authors        @relation(fields: [countryId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  countries    countries      @relation(fields: [countryId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   years        years          @relation(fields: [yearId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   genresbooks  genresbooks[]
 }
 
 model categories {
+  id    Int     @id @default(autoincrement())
+  name  String  @db.VarChar(200)
+  books books[]
+}
+
+model countries {
   id    Int     @id @default(autoincrement())
   name  String  @db.VarChar(200)
   books books[]
