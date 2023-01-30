@@ -88,6 +88,7 @@ async function reviseBook(book: BookEntity){
                 }
             },
             authorsbooks: {
+                deleteMany:{},
                 create: book.authorId.map(item => (
                     {
                         authors: {
@@ -100,6 +101,7 @@ async function reviseBook(book: BookEntity){
 
             },
             genresbooks: {
+                deleteMany:{},                
                 create: book.genreId.map(item => (
                     {
                         genres: {
