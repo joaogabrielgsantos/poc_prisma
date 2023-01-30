@@ -1,5 +1,5 @@
 import prisma from "../database/database.js";
-import { Book } from "../protocols/books.js";
+import { Book, BookEntity } from "../protocols/books.js";
 
 
 async function insertBook(book: Book) {
@@ -64,5 +64,58 @@ async function getBooks() {
     })
 }
 
+async function reviseBook(book: BookEntity){
+    const upBook = await prisma.books.update({
+        where: {
+          id: book.id
+        },
+        data: {
+            title: book.title,
+            isbn: book.isbn,
+            countries: {
+                connect: {
+                    id: book.countryId
+                }
+            },
+            categories: {
+                connect: {
+                    id: book.categoryId
+                }
+            },
+            years: {
+                connect: {
+                    id: book.yearId
+                }
+            },
+            authorsbooks: {
+                create: book.authorId.map(item => (
+                    {
+                        authors: {
+                            connect: {
+                                id: item
+                            }
+                        }
+                    }
+                ))
 
-export { insertBook, getBooks }
+            },
+            genresbooks: {
+                create: book.genreId.map(item => (
+                    {
+                        genres: {
+                            connect: {
+                                id: item
+                            }
+                        }
+                    }
+                ))
+
+            }
+
+        }
+      })
+      return upBook
+}
+
+
+export { insertBook, getBooks, reviseBook }
